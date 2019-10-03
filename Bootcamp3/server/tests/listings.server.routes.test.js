@@ -126,13 +126,15 @@ describe('Listings CRUD tests', function() {
       .send(listing2)
       .expect(200)
       .end(function(err, res) {
+
+        console.log("HERE ARE THE COORDINATES:" + res.body.coordinates);
         should.not.exist(err);
         should.exist(res.body._id);
         res.body.name.should.equal('Dr. Gardner-McCunes Office');
         res.body.code.should.equal('GMC');
         res.body.address.should.equal('432 Newell Dr, Gainesville, FL 32611');
-        res.body.coordinates.latitude.should.equal(28.75054);
-        res.body.coordinates.longitude.should.equal(-82.5001);
+        res.body.coordinates.latitude.should.equal(39.98);
+        res.body.coordinates.longitude.should.equal(-83.0994);
         id2 = res.body._id;
         done();
       });

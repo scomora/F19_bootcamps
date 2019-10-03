@@ -1,4 +1,3 @@
-
 /* Dependencies */
 var mongoose = require('mongoose'), 
     Listing = require('../models/listings.server.model.js'),
@@ -8,13 +7,11 @@ var mongoose = require('mongoose'),
   In this file, you should use Mongoose queries in order to retrieve/add/remove/update listings.
   On an error you should send a 404 status code, as well as the error message. 
   On success (aka no error), you should send the listing(s) as JSON in the response.
-
   HINT: if you are struggling with implementing these functions refer back to this tutorial 
   https://www.callicoder.com/node-js-express-mongodb-restful-crud-api-tutorial/
   or
   https://medium.com/@dinyangetoh/how-to-build-simple-restful-api-with-nodejs-expressjs-and-mongodb-99348012925d
   
-
   If you are looking for more understanding of exports and export modules - 
   https://www.sitepoint.com/understanding-module-exports-exports-node-js/
   or
@@ -58,11 +55,29 @@ exports.update = function(req, res) {
   var listing = req.listing;
 
   /* Replace the listings's properties with the new properties found in req.body */
- 
+  if (listing.name) {
+    listing.name = req.body.name;
+  }
+  if (listing.code) {
+    listing.code = req.body.code;
+  }
+  if (listing.coordinates) {
+    listing.coordinates = req.body.coordinates;
+  }
+  if (listing.address) {
+    listing.address = req.body.address;
+  }
   /*save the coordinates (located in req.results if there is an address property) */
- 
+  
   /* Save the listing */
-
+  listing.save(function(err){
+    if(err){
+      throw err;
+    }
+    else{
+      res.json(listing);
+    }
+  });
 };
 
 /* Delete a listing */
@@ -70,17 +85,29 @@ exports.delete = function(req, res) {
   var listing = req.listing;
 
   /* Add your code to remove the listins */
-
+  Listing.findByIdAndRemove(listing._id, function(err){
+    if(err){
+      throw err;
+    }
+    else{
+      res.json(listing);
+    }
+  });
 };
 
 /* Retreive all the directory listings, sorted alphabetically by listing code */
 exports.list = function(req, res) {
   /* Add your code */
+  Listing.find({}, function(err, data){
+    if(err){
+      throw err;
+    }
+    res.json(data);
+  }).sort({code : 1});
 };
 
 /* 
   Middleware: find a listing by its ID, then pass it to the next request handler. 
-
   HINT: Find the listing using a mongoose query, 
         bind it to the request object as the property 'listing', 
         then finally call next
